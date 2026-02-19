@@ -47,19 +47,25 @@ barra_lateral = html.Div(
                     [html.I(className="bi bi-bar-chart-fill"), html.Span("Comparación")],
                     href="/viz1",
                     active="exact",
+                    id="nav-comparacion", # ID añadido
                     className="nav-item-link",
+                    disabled=True,
                 ),
                 dbc.NavLink(
                     [html.I(className="bi bi-diagram-3-fill"), html.Span("Evolución Temporal")],
                     href="/viz2",
                     active="exact",
+                    id="nav-evolucion", # ID añadido
                     className="nav-item-link",
+                    disabled=True,
                 ),
                 dbc.NavLink(
                     [html.I(className="bi bi-graph-up"), html.Span("Sentimientos")],
                     href="/viz3",
                     active="exact",
+                    id="nav-sentimientos", # ID añadido
                     className="nav-item-link",
+                    disabled=True,
                 ),
             ],
             vertical=True,
@@ -72,6 +78,7 @@ barra_lateral = html.Div(
 
 aplicacion.layout = html.Div(
     [
+        dcc.Store(id='store-datos-pipeline', storage_type='memory'),
         barra_lateral,
         html.Div(dash.page_container, className="main-content"),
     ],
