@@ -10,11 +10,6 @@ Cambios:
 from src.data.carga_corpus import carga_corpus
 # Importar todas las librerías necesarias
 import spacy
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from src.utils import path
-from collections import Counter
 from tqdm import tqdm
 import warnings
 warnings.filterwarnings('ignore')
@@ -71,7 +66,7 @@ class pipeline_spacy:
         # Reconstruir el texto y procesarlo con spaCy
         texto = " ".join(tokens_lista)
         doc = self._nlp(texto)
-        etiquetas = [(token.text, token.tag_) for token in doc]
+        etiquetas = [(token.text, token.pos_) for token in doc]
         return etiquetas
 
     def _paso_pos_tagging(self):
@@ -116,7 +111,7 @@ class pipeline_spacy:
         doc = self._nlp(texto)
 
         # Obtener lemmas con sus tags
-        lemas = [(token.lemma_, token.tag_) for token in doc]
+        lemas = [(token.lemma_, token.pos_) for token in doc]
         return lemas
 
     def _paso_lematizacion(self):

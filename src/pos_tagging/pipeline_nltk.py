@@ -17,21 +17,12 @@ else:
 
 # Ahora importar todas las librerías necesarias
 import nltk
-from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk import pos_tag, pos_tag_sents
-from nltk.corpus import wordnet
-import pandas as pd
-import seaborn as sns
-from src.utils import path
 from tqdm import tqdm
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk import pos_tag
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
-import string
-import re
-import matplotlib.pyplot as plt
-from collections import Counter
+
 import warnings
 from src.data.carga_corpus import carga_corpus
 warnings.filterwarnings('ignore')
