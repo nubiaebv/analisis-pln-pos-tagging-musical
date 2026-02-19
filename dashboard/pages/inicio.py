@@ -497,17 +497,18 @@ def actualizar_consola(_, estado_actual):
     Output("nav-comparacion", "disabled"),
     Output("nav-evolucion", "disabled"),
     Output("nav-sentimientos", "disabled"),
-    Output("store-datos-pipeline", "data"),
+    Output("nav-pos", "disabled"),                        # ← 4to output
+    Output("store-datos-pipeline", "data"),               # ← 5to output
     Input("intervalo-progreso", "disabled"),
     prevent_initial_call=True
 )
 def habilitar_menu_y_datos(intervalo_deshabilitado):
     global df_resultado_global
 
-    # Solo si el intervalo está apagado Y tenemos datos listos
     if intervalo_deshabilitado and df_resultado_global is not None:
         print("Habilitando interfaz ahora...")
-        return False, False, False, df_resultado_global.to_dict('records')
+        return False, False, False, False, df_resultado_global.to_dict('records')
+        #
 
-    # Si no, no actualices nada (evita que se queden bloqueados por el None)
-    return dash.no_update, dash.no_update, dash.no_update, dash.no_update
+    return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
+    #
