@@ -1,0 +1,525 @@
+/* ─── Google Fonts ─────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ─── Variables globales ────────────────────────────────────────────────── */
+:root {
+  --fondo-base:       #0d1117;
+  --fondo-barra:      #0f1624;
+  --fondo-tarjeta:    #151c2c;
+  --fondo-tarjeta2:   #1e2738;
+  --acento:           #00d4aa;
+  --acento-suave:     rgba(0, 212, 170, 0.12);
+  --acento-hover:     #00b894;
+  --peligro:          #ff6b6b;
+  --advertencia:      #ffd166;
+  --texto-principal:  #e8edf5;
+  --texto-tenue:      #7a8aaa;
+  --borde:            rgba(255, 255, 255, 0.07);
+  --ancho-barra:      240px;
+  --radio:            12px;
+  --transicion:       0.2s ease;
+}
+
+/* ─── Reset y base ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--fondo-base);
+  color: var(--texto-principal);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ─── Estructura principal ──────────────────────────────────────────────── */
+.app-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: var(--ancho-barra);
+  min-height: 100vh;
+  background: var(--fondo-base);
+  overflow-y: auto;
+}
+
+/* ─── Barra lateral ─────────────────────────────────────────────────────── */
+.sidebar {
+  width: var(--ancho-barra);
+  background: var(--fondo-barra);
+  border-right: 1px solid var(--borde);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.sidebar-header {
+  padding: 28px 20px 20px;
+}
+
+.sidebar-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--texto-principal);
+  letter-spacing: -0.3px;
+}
+
+.logo-accent {
+  color: var(--acento);
+}
+
+.sidebar-subtitle {
+  font-size: 11px;
+  color: var(--texto-tenue);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid var(--borde);
+  margin: 0 16px 12px;
+}
+
+.sidebar-version {
+  margin-top: auto;
+  padding: 16px 20px;
+  font-size: 11px;
+  color: var(--texto-tenue);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ─── Enlace de navegación ──────────────────────────────────────────────── */
+.nav-item-link {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px !important;
+  color: var(--texto-tenue) !important;
+  border-radius: 0 !important;
+  border-left: 3px solid transparent;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: color var(--transicion), background var(--transicion), border-color var(--transicion);
+  text-decoration: none !important;
+}
+
+.nav-item-link i {
+  font-size: 16px;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.nav-item-link:hover {
+  color: var(--texto-principal) !important;
+  background: var(--acento-suave) !important;
+  border-left-color: var(--acento);
+}
+
+.nav-item-link.active {
+  color: var(--acento) !important;
+  background: var(--acento-suave) !important;
+  border-left-color: var(--acento);
+}
+
+/* ─── Contenedor de página ──────────────────────────────────────────────── */
+.page-container {
+  padding: 36px 40px;
+  max-width: 1400px;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--texto-principal);
+  margin-bottom: 6px;
+}
+
+.page-subtitle {
+  color: var(--texto-tenue);
+  font-size: 14px;
+}
+
+/* ─── Sección con tarjeta ───────────────────────────────────────────────── */
+.card-section {
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--acento);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+}
+
+/* ─── Tarjetas de pipeline ──────────────────────────────────────────────── */
+.pipeline-fila-tarjetas {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.pipeline-tarjeta {
+  flex: 1;
+  background: var(--fondo-tarjeta2);
+  border: 2px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 20px;
+  cursor: pointer;
+  transition: border-color var(--transicion), box-shadow var(--transicion), background var(--transicion);
+  text-align: center;
+  user-select: none;
+}
+
+.pipeline-tarjeta:hover {
+  border-color: var(--acento);
+  background: var(--acento-suave);
+}
+
+.pipeline-tarjeta-activa {
+  border-color: var(--acento) !important;
+  background: var(--acento-suave) !important;
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.15);
+}
+
+.pipeline-tarjeta h6 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--texto-principal);
+  margin: 10px 0 6px;
+}
+
+.pipeline-tarjeta p {
+  font-size: 12px;
+  color: var(--texto-tenue);
+  margin: 0;
+}
+
+.pipeline-icono {
+  font-size: 28px;
+  color: var(--acento);
+}
+
+/* ─── Botones ───────────────────────────────────────────────────────────── */
+.fila-botones {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-ejecutar {
+  background: var(--acento) !important;
+  border: none !important;
+  color: #0d1117 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  padding: 10px 24px !important;
+  border-radius: 8px !important;
+  transition: background var(--transicion), transform var(--transicion) !important;
+  letter-spacing: 0.3px;
+}
+
+.btn-ejecutar:hover {
+  background: var(--acento-hover) !important;
+  transform: translateY(-1px);
+}
+
+.btn-limpiar {
+  background: transparent !important;
+  border: 1px solid var(--borde) !important;
+  color: var(--texto-tenue) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 13px !important;
+  padding: 10px 20px !important;
+  border-radius: 8px !important;
+  transition: border-color var(--transicion), color var(--transicion) !important;
+}
+
+.btn-limpiar:hover {
+  border-color: var(--peligro) !important;
+  color: var(--peligro) !important;
+}
+
+/* ─── Ventana de consola ────────────────────────────────────────────────── */
+.ventana-consola {
+  background: #0a0f1a;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  overflow: hidden;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.consola-barra-superior {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #111827;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--borde);
+}
+
+.punto {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.punto-rojo    { color: #ff5f57; }
+.punto-amarillo { color: #febc2e; }
+.punto-verde   { color: #28c840; }
+
+.consola-titulo {
+  font-size: 12px;
+  color: var(--texto-tenue);
+  margin-left: 8px;
+  letter-spacing: 0.5px;
+}
+
+.consola-cuerpo {
+  padding: 16px;
+  min-height: 220px;
+  max-height: 380px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--fondo-tarjeta2) transparent;
+}
+
+.consola-cuerpo::-webkit-scrollbar { width: 5px; }
+.consola-cuerpo::-webkit-scrollbar-track { background: transparent; }
+.consola-cuerpo::-webkit-scrollbar-thumb { background: var(--fondo-tarjeta2); border-radius: 4px; }
+
+.consola-placeholder {
+  color: var(--texto-tenue);
+  font-size: 13px;
+  margin: auto;
+  text-align: center;
+}
+
+.linea-consola {
+  font-size: 12.5px;
+  line-height: 1.8;
+  white-space: pre !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: aparecer 0.1s ease;
+  display: block;
+  unicode-bidi: embed;
+  direction: ltr;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Estilos de los spans tqdm ─────────────────────────────────────────── */
+.tqdm-etiqueta    { color: var(--acento);      font-weight: 600; min-width: 220px; display: inline-block; }
+.tqdm-barra       { color: #4ade80;            letter-spacing: -0.5px; }
+.tqdm-porcentaje  { color: var(--advertencia); min-width: 38px; display: inline-block; text-align: right; }
+.tqdm-conteo      { color: var(--texto-tenue); margin-left: 8px; }
+.tqdm-resto       { color: var(--texto-tenue); margin-left: 6px; font-size: 11px; }
+.tqdm-completado  { color: #4ade80;            font-weight: 600; }
+.tqdm-finalizado  { color: var(--acento);      font-weight: 700; font-size: 13px; }
+.tqdm-error       { color: var(--peligro);     font-weight: 600; }
+.tqdm-info        { color: var(--texto-principal); }
+
+/* ── Indicadores de disponibilidad en las tarjetas ──────────────────────── */
+.indicador-disponible {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: #4ade80;
+  letter-spacing: 0.3px;
+}
+
+.indicador-no-disponible {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--peligro);
+  letter-spacing: 0.3px;
+}
+
+/* ── Lista de pasos del pipeline seleccionado ───────────────────────────── */
+.detalle-pasos {
+  margin-bottom: 20px;
+}
+
+.lista-pasos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: var(--fondo-tarjeta2);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+
+.paso-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.paso-numero {
+  flex-shrink: 0;
+  width: 52px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--acento);
+  background: var(--acento-suave);
+  border: 1px solid rgba(0, 212, 170, 0.25);
+  border-radius: 6px;
+  padding: 2px 6px;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+
+.paso-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.paso-nombre {
+  font-size: 13px;
+  color: var(--texto-principal);
+  font-weight: 600;
+}
+
+.paso-descripcion {
+  font-size: 12px;
+  color: var(--texto-tenue);
+}
+
+/* ─── Cuadrícula de gráficas ────────────────────────────────────────────── */
+.charts-row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.chart-card {
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 8px;
+  overflow: hidden;
+}
+
+.chart-card.half {
+    flex: 1;
+    min-width: 450px; /* Incrementamos el mínimo para que no se vean tan comprimidas */
+    background-color: #1e2738;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.chart-card.full { flex: 0 0 100%; }
+
+.chart { height: 380px; }
+
+/* ─── Fila de controles ─────────────────────────────────────────────────── */
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.control-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--texto-tenue);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.slider { flex: 1; min-width: 200px; }
+
+/* Sobrescritura del slider de Dash */
+.rc-slider-rail        { background: var(--fondo-tarjeta2) !important; }
+.rc-slider-track       { background: var(--acento) !important; }
+.rc-slider-handle      { border-color: var(--acento) !important; background: var(--acento) !important; }
+.rc-slider-mark-text   { color: var(--texto-tenue) !important; font-size: 11px !important; }
+
+/* Sobrescritura del dropdown de Dash */
+.dropdown .Select-control      { background: var(--fondo-tarjeta2) !important; border-color: var(--borde) !important; color: var(--texto-principal) !important; }
+.dropdown .Select-menu-outer   { background: var(--fondo-tarjeta2) !important; border-color: var(--borde) !important; }
+.dropdown .Select-option               { color: var(--texto-principal) !important; }
+.dropdown .Select-option.is-focused    { background: var(--acento-suave) !important; }
+.dropdown .Select-value-label          { color: var(--texto-principal) !important; }
+.dropdown .Select-arrow                { border-top-color: var(--texto-tenue) !important; }
+
+/* ─── Tarjetas de estadísticas ──────────────────────────────────────────── */
+.stats-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 120px;
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--acento);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+/* Modificadores de color para los KPIs de sentimientos */
+.stat-number.positivo { color: #4ade80; }
+.stat-number.negativo { color: var(--peligro); }
+.stat-number.neutro   { color: var(--advertencia); }
+.stat-number.acento   { color: var(--acento); }
+
+.stat-label {
+  font-size: 12px;
+  color: var(--texto-tenue);
+  font-weight: 500;
+}
+
+/* ─── Barra de desplazamiento global ────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--fondo-tarjeta2); border-radius: 4px; }
