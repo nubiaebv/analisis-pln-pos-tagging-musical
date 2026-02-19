@@ -46,26 +46,31 @@ layout = html.Div(
     prevent_initial_call=False
 )
 def actualizar_graficas_emocion(data):
+    fig_vacio = go.Figure().update_layout(**diseno_oscuro())
+
     if not data:
-        fig_v = go.Figure().update_layout(**diseno_oscuro())
-        return fig_v, fig_v, fig_v
+        print("⚠️  store-datos-pipeline está vacío o None")
+        return fig_vacio, fig_vacio
 
-    df = pd.DataFrame(data)
-    analizador = visualizador_emocional(df)
+    try:
+        df = pd.DataFrame(data)
+        print(f"✅ DataFrame cargado: {df.shape}, columnas: {df.columns.tolist()}")
 
+        analizador = visualizador_emocional(df)
+        fig_barras = analizador.grafico_barras_emocion_genero()
+        fig_scatter = analizador.grafico_dispersion_sentimiento()
 
-    # Generar figuras
-    #fig_heat = analizador.grafico_heatmap_emocional()
-    fig_barras = analizador.grafico_barras_emocion_genero()
-    fig_scatter = analizador.grafico_dispersion_sentimiento()
+        estilo = diseno_oscuro()
+        for fig in [fig_barras, fig_scatter]:
+            fig.update_layout(**estilo)
 
-    # Estética
-    estilo = diseno_oscuro()
-    for fig in [ fig_barras, fig_scatter]:
-        fig.update_layout(**estilo)
+        return fig_barras, fig_scatter
 
-
-    return  fig_barras, fig_scatter
+    except Exception as e:
+        print(f"❌ Error en callback emocion: {e}")
+        import traceback;
+        traceback.print_exc()
+        return fig_vacio, fig_vacio
 
 def diseno_oscuro():
     return dict(

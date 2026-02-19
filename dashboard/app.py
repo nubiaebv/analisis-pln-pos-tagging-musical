@@ -25,12 +25,12 @@ barra_lateral = html.Div(
             [
                 html.Div(
                     [
-                        html.Span("NLP", className="logo-accent"),
+                        html.Span("NP Asociados", className="logo-accent"),
                         html.Span(" Estudio"),
                     ],
                     className="sidebar-title",
                 ),
-                html.P("Tablero de Pipelines", className="sidebar-subtitle"),
+                html.P("Analizador de canciones", className="sidebar-subtitle"),
             ],
             className="sidebar-header",
         ),
@@ -64,6 +64,14 @@ barra_lateral = html.Div(
                     href="/viz3",
                     active="exact",
                     id="nav-sentimientos", # ID añadido
+                    className="nav-item-link",
+                    disabled=True,
+                ),
+                dbc.NavLink(
+                    [html.I(className="bi i-graph-up"), html.Span("POS")],
+                    href="/viz4",
+                    active="exact",
+                    id="nav-pos",  # ID añadido
                     className="nav-item-link",
                     disabled=True,
                 ),
