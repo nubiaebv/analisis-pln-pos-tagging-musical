@@ -33,6 +33,7 @@ logs_sistema = []
 # Ejemplo: {"Paso 1": "Barra al 20%", "Paso 2": "Barra al 5%"}
 pasos_activos = {}
 pipeline_en_ejecucion: bool = False
+df_resultado_global = None
 
 
 # ── Capturador de salida estándar (stdout/stderr) para tqdm ──────────────────
@@ -119,7 +120,7 @@ def ejecutar_pipeline_spacy():
     Lanza pipeline_spacy().ejecutar() redirigiendo stdout y stderr
     al capturador para mostrar el progreso de tqdm en la consola del dashboard.
     """
-    global logs_sistema, pasos_activos, pipeline_en_ejecucion
+    global logs_sistema, pasos_activos, pipeline_en_ejecucion,df_resultado_global
     logs_sistema = []
     pasos_activos = {}
     pipeline_en_ejecucion = True
@@ -137,19 +138,21 @@ def ejecutar_pipeline_spacy():
 
         if not _spacy_disponible:
             registros_pipeline.append(
-                f'<span class="tqdm-error">✘ No se pudo importar pipeline_spacy: '
+                f'<span class="tqdm-error">No se pudo importar pipeline_spacy: '
                 f'{_error_importacion_spacy}</span>'
             )
         else:
             instancia_spacy = pipeline_spacy()
-            instancia_spacy.ejecutar()
+            df_resultado_global = instancia_spacy.ejecutar()
+            print(f"DEBUG HILO: DataFrame creado con {len(df_resultado_global)} filas")
+
             registros_pipeline.append(
-                '<span class="tqdm-finalizado">🎉 Pipeline spaCy finalizado correctamente</span>'
+                '<span class="tqdm-finalizado">Pipeline spaCy finalizado correctamente</span>'
             )
 
     except Exception as error:
         registros_pipeline.append(
-            f'<span class="tqdm-error">✘ Error durante la ejecución de spaCy: {error}</span>'
+            f'<span class="tqdm-error">Error durante la ejecución de spaCy: {error}</span>'
         )
     finally:
         # Restaurar los flujos originales siempre
@@ -163,7 +166,7 @@ def ejecutar_pipeline_nltk():
     Lanza pipeline_nltk().ejecutar() redirigiendo stdout y stderr
     al capturador para mostrar el progreso de tqdm en la consola del dashboard.
     """
-    global logs_sistema, pasos_activos, pipeline_en_ejecucion
+    global logs_sistema, pasos_activos, pipeline_en_ejecucion, df_resultado_global
     logs_sistema = []
     pasos_activos = {}
     pipeline_en_ejecucion = True
@@ -179,19 +182,20 @@ def ejecutar_pipeline_nltk():
 
         if not _nltk_disponible:
             registros_pipeline.append(
-                f'<span class="tqdm-error">✘ No se pudo importar pipeline_nltk: '
+                f'<span class="tqdm-error">No se pudo importar pipeline_nltk: '
                 f'{_error_importacion_nltk}</span>'
             )
         else:
             instancia_nltk = pipeline_nltk()
-            instancia_nltk.ejecutar()
+            df_resultado_global = instancia_nltk.ejecutar()
+            print(f"DEBUG HILO: DataFrame creado con {len(df_resultado_global)} filas")
             registros_pipeline.append(
-                '<span class="tqdm-finalizado">🎉 Pipeline NLTK finalizado correctamente</span>'
+                '<span class="tqdm-finalizado">Pipeline NLTK finalizado correctamente</span>'
             )
 
     except Exception as error:
         registros_pipeline.append(
-            f'<span class="tqdm-error">✘ Error durante la ejecución de NLTK: {error}</span>'
+            f'<span class="tqdm-error">Error durante la ejecución de NLTK: {error}</span>'
         )
     finally:
         sys.stdout = stdout_original
@@ -205,16 +209,16 @@ def _generar_mensajes_estado_importacion() -> list[str]:
     """Retorna mensajes HTML sobre si los pipelines se importaron correctamente."""
     mensajes = []
     if _spacy_disponible:
-        mensajes.append('<span class="tqdm-completado">✔ pipeline_spacy importado correctamente</span>')
+        mensajes.append('<span class="tqdm-completado">pipeline_spacy importado correctamente</span>')
     else:
         mensajes.append(
-            f'<span class="tqdm-error">✘ pipeline_spacy no disponible: {_error_importacion_spacy}</span>'
+            f'<span class="tqdm-error">pipeline_spacy no disponible: {_error_importacion_spacy}</span>'
         )
     if _nltk_disponible:
-        mensajes.append('<span class="tqdm-completado">✔ pipeline_nltk importado correctamente</span>')
+        mensajes.append('<span class="tqdm-completado">pipeline_nltk importado correctamente</span>')
     else:
         mensajes.append(
-            f'<span class="tqdm-error">✘ pipeline_nltk no disponible: {_error_importacion_nltk}</span>'
+            f'<span class="tqdm-error">pipeline_nltk no disponible: {_error_importacion_nltk}</span>'
         )
     return mensajes
 
@@ -430,7 +434,7 @@ def resaltar_tarjeta_seleccionada(clics_spacy, clics_nltk):
 )
 def lanzar_pipeline(clics_ejecutar, clics_limpiar, pipeline_elegido):
     """Lanza el pipeline real en un hilo aparte y activa el sondeo de la consola."""
-    global registros_pipeline, pipeline_en_ejecucion
+    global registros_pipeline, pipeline_en_ejecucion, df_resultado_global
 
     contexto = dash.callback_context
     if not contexto.triggered:
@@ -466,7 +470,7 @@ def lanzar_pipeline(clics_ejecutar, clics_limpiar, pipeline_elegido):
     prevent_initial_call=True,
 )
 def actualizar_consola(_, estado_actual):
-    global logs_sistema, pasos_activos, pipeline_en_ejecucion
+    global logs_sistema, pasos_activos, pipeline_en_ejecucion,df_resultado_global
 
     # Ordenamos los pasos para que el Paso 1 siempre esté arriba del Paso 2
     claves_ordenadas = sorted(pasos_activos.keys())
@@ -486,3 +490,24 @@ def actualizar_consola(_, estado_actual):
         dangerously_allow_html=True,
         className="linea-consola"
     ), not pipeline_en_ejecucion
+
+
+# inicio.py
+@callback(
+    Output("nav-comparacion", "disabled"),
+    Output("nav-evolucion", "disabled"),
+    Output("nav-sentimientos", "disabled"),
+    Output("store-datos-pipeline", "data"),
+    Input("intervalo-progreso", "disabled"),
+    prevent_initial_call=True
+)
+def habilitar_menu_y_datos(intervalo_deshabilitado):
+    global df_resultado_global
+
+    # Solo si el intervalo está apagado Y tenemos datos listos
+    if intervalo_deshabilitado and df_resultado_global is not None:
+        print("Habilitando interfaz ahora...")
+        return False, False, False, df_resultado_global.to_dict('records')
+
+    # Si no, no actualices nada (evita que se queden bloqueados por el None)
+    return dash.no_update, dash.no_update, dash.no_update, dash.no_update

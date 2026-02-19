@@ -159,7 +159,7 @@ class pipeline_nltk:
 
     def _paso_lematizacion(self):
         tqdm.pandas(desc="Paso 5 Lematización")
-        self._df['pos_tags_lemma'] = self._df['pos_tags_lower'].progress_apply(self._lematizar)
+        self._df['Lematizado'] = self._df['pos_tags_lower'].progress_apply(self._lematizar)
 
     # Guardar Corpus
     def _guardar(self):
@@ -173,3 +173,4 @@ class pipeline_nltk:
         self._paso_minusculas()
         self._paso_lematizacion()
         self._guardar()
+        return self._cargar_corpus.cargar_corpus('\\data\\results\\corpus_canciones_nltk.csv')

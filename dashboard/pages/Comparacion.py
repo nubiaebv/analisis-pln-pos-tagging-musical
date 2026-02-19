@@ -1,15 +1,11 @@
 import dash
 from dash import html, dcc, callback, Input, Output
 import plotly.graph_objects as go
-import plotly.express as px
+import pandas as pd
+# Importamos la clase que creamos basada en el notebook 05
+from src.analysis.comparacion_generos import comparacion_generos
 
-dash.register_page(__name__, path="/viz1", name="Comparacion")
-
-# ── Datos de ejemplo (reemplazar con datos reales del pipeline) ───────────────
-palabras  = ["análisis", "texto", "modelo", "datos", "lenguaje",
-             "corpus", "token", "entidad", "frase", "sentimiento"]
-frecuencias = [120, 98, 87, 76, 65, 54, 43, 38, 30, 22]
-
+dash.register_page(__name__, path="/viz1", name="Comparación de Géneros")
 
 # ── Diseño de la página ───────────────────────────────────────────────────────
 layout = html.Div(
@@ -17,41 +13,36 @@ layout = html.Div(
         # Encabezado
         html.Div(
             [
-                html.H1("Frecuencia de Términos", className="page-title"),
+                html.H1("Análisis Comparativo por Género", className="page-title"),
                 html.P(
-                    "Palabras más frecuentes detectadas en el corpus procesado.",
+                    "Contraste de patrones morfosintácticos y densidad léxica (Géneros con > 50 canciones).",
                     className="page-subtitle",
                 ),
             ],
             className="page-header",
         ),
 
-        # Control deslizante
-        html.Div(
-            [
-                html.Label("Número de términos a mostrar:", className="control-label"),
-                dcc.Slider(
-                    id="deslizador-top-n",
-                    min=5,
-                    max=10,
-                    step=1,
-                    value=10,
-                    marks={i: str(i) for i in range(5, 11)},
-                    className="slider",
-                ),
-            ],
-            className="card-section controls-row",
-        ),
-
-        # Gráficas
+        # Gráfica Principal: Ratio S/V (Ancho completo)
         html.Div(
             [
                 html.Div(
-                    dcc.Graph(id="grafica-barras", className="chart"),
+                    dcc.Graph(id="grafica-barras-sv", className="chart", config={'responsive': True},
+                              style={"height": "500px"}),
+                    className="chart-card full-width",
+                ),
+            ],
+            className="charts-row",
+        ),
+
+        # Gráficas Inferiores: Dispersión y Boxplot (Mitad y mitad)
+        html.Div(
+            [
+                html.Div(
+                    dcc.Graph(id="grafica-dispersion-densidad", className="chart", style={"height": "450px"}),
                     className="chart-card half",
                 ),
                 html.Div(
-                    dcc.Graph(id="grafica-treemap", className="chart"),
+                    dcc.Graph(id="grafica-boxplot-tokens", className="chart", style={"height": "450px"}),
                     className="chart-card half",
                 ),
             ],
@@ -65,56 +56,53 @@ layout = html.Div(
 # ── Callback ──────────────────────────────────────────────────────────────────
 
 @callback(
-    Output("grafica-barras", "figure"),
-    Output("grafica-treemap", "figure"),
-    Input("deslizador-top-n", "value"),
+    Output("grafica-barras-sv", "figure"),
+    Output("grafica-dispersion-densidad", "figure"),
+    Output("grafica-boxplot-tokens", "figure"),
+    Input("store-datos-pipeline", "data"),
+    prevent_initial_call=False
 )
-def actualizar_graficas(cantidad_terminos):
-    """Actualiza las gráficas según el número de términos seleccionado."""
-    palabras_filtradas   = palabras[:cantidad_terminos]
-    frecuencias_filtradas = frecuencias[:cantidad_terminos]
+def actualizar_graficas(data):
+    if not data:
+        fig_vacia = go.Figure().update_layout(**diseno_oscuro())
+        return fig_vacia, fig_vacia, fig_vacia
 
-    # Gráfica de barras horizontales
-    grafica_barras = go.Figure(
-        go.Bar(
-            x=frecuencias_filtradas[::-1],
-            y=palabras_filtradas[::-1],
-            orientation="h",
-            marker=dict(
-                color=frecuencias_filtradas[::-1],
-                colorscale="Teal",
-                showscale=False,
-            ),
-        )
-    )
-    grafica_barras.update_layout(
-        title="Términos más frecuentes",
-        **diseno_oscuro(),
-        xaxis_title="Frecuencia",
-        yaxis_title="",
-    )
+    # 1. Instanciamos la clase con los datos del pipeline
+    df = pd.DataFrame(data)
+    analizador = comparacion_generos(df)
 
-    # Gráfica de treemap
-    grafica_treemap = px.treemap(
-        names=palabras_filtradas,
-        parents=[""] * len(palabras_filtradas),
-        values=frecuencias_filtradas,
-        color=frecuencias_filtradas,
-        color_continuous_scale="Teal",
-    )
-    grafica_treemap.update_layout(
-        title="Treemap de frecuencias",
-        **diseno_oscuro(),
-    )
+    # 2. Ejecutamos el procesamiento (filtrado > 50 y métricas)
+    analizador.preparar_datos()
 
-    return grafica_barras, grafica_treemap
+    # 3. Obtenemos las figuras de la clase
+    fig_barras = analizador.grafico_barras_comparativo()
+    fig_scatter = analizador.grafico_dispersion_densidad()
+    fig_box = analizador.grafico_distribucion_tokens()
+
+    # 4. Aplicar diseño oscuro y ajustes de ejes a cada una
+    estilo = diseno_oscuro()
+
+    for fig in [fig_barras, fig_scatter, fig_box]:
+        fig.update_layout(**estilo)
+        # Ajuste específico para que las etiquetas de géneros se lean bien
+        fig.update_xaxes(tickangle=45)
+
+    return fig_barras, fig_scatter, fig_box
 
 
 def diseno_oscuro():
-    """Retorna los parámetros de diseño oscuro comunes a todas las gráficas."""
+    """Mantenemos tu configuración de diseño oscuro"""
     return dict(
-        paper_bgcolor="#151c2c",
-        plot_bgcolor="#1e2738",
-        font=dict(color="#c9d4e8", family="'Courier New', monospace"),
-        margin=dict(l=20, r=20, t=50, b=20),
+        template="plotly_dark",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#c9d4e8"),
+        margin=dict(l=40, r=20, t=60, b=80),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.4,
+            xanchor="center",
+            x=0.5
+        )
     )

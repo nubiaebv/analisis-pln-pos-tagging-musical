@@ -133,3 +133,4 @@ class pipeline_spacy:
         self._paso_minusculas()
         self._paso_lematizacion()
         self._guardar()
+        return self._cargar_corpus.cargar_corpus('\\data\\results\\corpus_canciones_spacy.csv')

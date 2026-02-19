@@ -422,6 +422,7 @@ body {
 .charts-row {
   display: flex;
   gap: 20px;
+  width: 100%;
   margin-bottom: 20px;
   flex-wrap: wrap;
 }
@@ -434,7 +435,14 @@ body {
   overflow: hidden;
 }
 
-.chart-card.half { flex: 1; min-width: 300px; }
+.chart-card.half {
+    flex: 1;
+    min-width: 450px; /* Incrementamos el mínimo para que no se vean tan comprimidas */
+    background-color: #1e2738;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
 .chart-card.full { flex: 0 0 100%; }
 
 .chart { height: 380px; }
