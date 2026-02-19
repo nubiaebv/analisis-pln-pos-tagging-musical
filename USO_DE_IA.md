@@ -8,11 +8,11 @@
 
 ## 1. Herramientas de IA Utilizadas
 
-| Herramienta    | Tareas en las que se usó                              |
-|----------------|-------------------------------------------------------|
-| Claude         | _Ej: documentación, explicación de conceptos_         |
-| Gemini         | _Ej: generación de funciones, depuración de errores_  |
-| GitHub Copilot | _Ej: autocompletado de código, sugerencias en línea_  |
+| Herramienta    | Tareas en las que se usó                                                           |
+|----------------|------------------------------------------------------------------------------------|
+| Claude         | _Estructuración de Dash, lógica de APIs y control de excepciones._                 |
+| Gemini         | _Consulta de redacción de mensajes de commit y textos informativos del dashboard._ |
+| GitHub Copilot | _Sugerencias de estructuras de documentación_                                      |
 
 ---
 ## 2. Ejemplos de Prompts Utilizados
