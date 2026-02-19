@@ -172,7 +172,7 @@ class pipeline_nltk:
 
     # Guardar Corpus
     def _guardar(self):
-       self._cargar_corpus.guardar_corpus('\\data\\results\\corpus_canciones_nltk1.csv',self._df)
+       self._cargar_corpus.guardar_corpus('\\data\\results\\corpus_canciones_nltk.csv',self._df)
 
     # Ejecutar pipeline completo
     def ejecutar(self):
